@@ -26,6 +26,7 @@ const Register = () => {
 
     useEffect(() => {
         if(formData.email !== "" && formData.password !== "" && formData.realname !== "" && formData.username !== ""){
+            //descomentar esto cuando se tenga el endpoint y aplicar la logica necesaria para gestionar los datos traidos del backend
             // const sendData = async () =>{
             //     try{
             //         const respuesta = await fetch(URL, {
