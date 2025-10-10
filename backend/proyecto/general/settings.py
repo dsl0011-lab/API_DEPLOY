@@ -83,9 +83,9 @@ ASGI_APPLICATION = 'general.asgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "proyecto-semana3"),
-        "USER": os.getenv("POSTGRES_USER", "danos"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "1601"),
+        "NAME": os.getenv("POSTGRES_DB", "BASE_DE_DATOS_LOCAL"),  #ATENCION CONFIGURA ESTOS DATOS CON RESPECTO A TU POSTGRES
+        "USER": os.getenv("POSTGRES_USER", "NICK_LOCAL_POSTGRES"), #AQUI
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "CONTRASEÑA_DE_NICK"), #Y AQUI, Y TAMBIEN EN .env
         "HOST": os.getenv("POSTGRES_HOST", "localhost"),
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }

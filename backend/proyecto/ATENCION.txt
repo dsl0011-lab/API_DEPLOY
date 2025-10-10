@@ -1,0 +1,2 @@
+antes de desarrollar la app configura el apartado database en setting y .env 
+con respecto a los datos de tu POSTGRES, (puedes usar pgadmin 4) en tu maquina local, de lo contrario petara 
