@@ -16,9 +16,8 @@ class UsuarioPersonalizado(models.Model):
 
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
-    username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True)
-    contraseña = models.CharField(max_length=128)
+    clave = models.CharField(max_length=128)
     genero = models.CharField(max_length=1, choices=GENEROS)
     rol = models.CharField(max_length=1, choices=ROLES)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
@@ -26,7 +25,7 @@ class UsuarioPersonalizado(models.Model):
     def save(self, *args, **kwargs):
         # Encripta la contraseña antes de guardar
         if not self.pk:  # Solo al crear (no al actualizar)
-            self.contraseña = make_password(self.contraseña)
+            self.clave = make_password(self.clave)
         super().save(*args, **kwargs)
 
     def __str__(self):
