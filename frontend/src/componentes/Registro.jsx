@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-const Register = () => {
+const Register = ({ funcUsuario }) => {
 
     const URL = "http://localhost:8000/api/usuarios/"
 
@@ -27,25 +27,28 @@ const Register = () => {
 
     useEffect(() => {
         const sendData = async () =>{
-            try{
-                const respuesta = await fetch(URL, {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(formData)
-                })
-                if(!respuesta.ok){ {
-                        const errorData = await respuesta.json()
-                        console.error("Ha ocurrido el siguiente problema", errorData)
-                }}
-                const data = await respuesta.json()
-                console.log("Los datos recibidos son:", data)
-            }catch(err){
-                console.log("Ha ocurrido un error no documentado: ",err)
+            if(formData.nombre !== "" && formData.apellido !== "" && formData.contraseña !== "" && formData.email !== ""){
+                try{
+                    const respuesta = await fetch(URL, {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(formData)
+                    })
+                    if(!respuesta.ok){ {
+                            const errorData = await respuesta.json()
+                            console.error("Ha ocurrido el siguiente problema", errorData)
+                    }}
+                    const data = await respuesta.json()
+                    console.log("Los datos recibidos son:", data)
+                    funcUsuario(data)
+                }catch(err){
+                    console.log("Ha ocurrido un error no documentado: ",err)
+                }
+                console.log("estos son los datos enviados: ", formData)
             }
         }
         sendData();
-        console.log(formData)
-    },[formData])
+    },[formData, funcUsuario ])
 
     return(
         <article className="w-12/12 h-12/12 flex flex-col justify-center items-center p-8">
@@ -62,14 +65,15 @@ const Register = () => {
                         <input type="password" name="passwordR" id="passwordR" placeholder="Ingresa tu contraseña" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         <select name="generoR" id="generoR" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required >
                             <option value="">Selecciona tu género</option>
-                            <option value="masculino">masculino</option>
-                            <option value="femenino">femenino</option>
+                            <option value="M">masculino</option>
+                            <option value="F">femenino</option>
+                            <option value="O">otro</option>
                         </select>
                         <select name="RolR" id="rolR" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required >
                             <option value="">Selecciona tu rol</option>
-                            <option value="estudiante">estudiante</option>
-                            <option value="profesor">profesor</option>
-                            <option value="administrador">administrador</option>
+                            <option value="E">estudiante</option>
+                            <option value="P">profesor</option>
+                            <option value="A">administrador</option>
                         </select>
                     <button type="submit" className="w-full h-fit p-2 rounded-2xl text-white bg-gray-900 hover:bg-slate-800 text-center">Registrate</button>
                     <a href="#" className="text-sm w-full text-center font-medium text-primary-600 hover:underline text-white dark:text-primary-500 ml-2">¿Ya tienes cuenta?</a>
