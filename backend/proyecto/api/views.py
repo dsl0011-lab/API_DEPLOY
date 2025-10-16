@@ -3,6 +3,7 @@ from .models import UsuarioPersonalizado
 from .serializers import (
     UsuarioPersonalizadoSerializer,
     RegistroSerializer,
+<<<<<<< HEAD
     LoginSerializer
 )
 from rest_framework.permissions import IsAuthenticated, BasePermission
@@ -13,6 +14,10 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import AllowAny, IsAuthenticated, BasePermission
 from rest_framework.response import Response
 from rest_framework import status, viewsets, filters
+=======
+)
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+>>>>>>> 131ac78 (back con jwt, roles y funciones por roles v2)
 
 class IsAdminOrSelf(BasePermission):
     """
@@ -101,7 +106,6 @@ class UsuarioPersonalizadoViewSet(viewsets.ModelViewSet):
         user.save()
         return Response({"ok": True})
 
-# METODO QUE GESTIONA LOS DATOS DEL REGISTRO 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def register_user(request):
@@ -138,55 +142,17 @@ def login_user(request):
         user = serializer.validated_data["user"]
         refresh = RefreshToken.for_user(user)
 
-        # Crear respuesta con access token
-        response = Response({
-            "access": str(refresh.access_token),
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "rol": user.rol,
-            "gender": user.gender
-        }, status=status.HTTP_200_OK)
-
-        # Guardar refresh token en cookie HttpOnly
-        response.set_cookie(
-            key='refresh_token',
-            value=str(refresh),
-            httponly=True,
-            secure=True,   # True en producción con HTTPS
-            samesite='Lax' # Ajusta según necesidades
-        )
-
-        return response
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def refresh_access_token(request):
-    refresh_token = request.COOKIES.get('refresh_token')
-    
-    if not refresh_token:
-        return Response({"detail": "No refresh token"}, status=401)
-    
-    token = RefreshToken(refresh_token)
-    access_token = str(token.access_token)
-    
-    return Response({"access": access_token})
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
         # Campo extra en el payload
-        token["rol"] = getattr(user, "rol", None)
-        token["email"] = user.email
+        token["role"] = getattr(user, "role", None)
+        token["username"] = user.username
         return token
 
     def validate(self, attrs):
         data = super().validate(attrs)
-        data["rol"] = getattr(self.user, "rol", None)
-        data["email"] = self.user.email
+        data["role"] = getattr(self.user, "role", None)
+        data["username"] = self.user.username
         return data
-    
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
