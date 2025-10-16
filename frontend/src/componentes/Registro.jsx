@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-const Register = ({ funcUsuario }) => {
+const Register = ({ funcUsuario, setFlipped }) => {
 
     const URL = "http://localhost:8000/api/usuarios/"
 
@@ -39,47 +39,43 @@ const Register = ({ funcUsuario }) => {
                             console.error("Ha ocurrido el siguiente problema", errorData)
                     }}
                     const data = await respuesta.json()
-                    console.log("Los datos recibidos son:", data)
                     funcUsuario(data)
                 }catch(err){
                     console.log("Ha ocurrido un error no documentado: ",err)
                 }
-                console.log("estos son los datos enviados: ", formData)
             }
         }
         sendData();
     },[formData, funcUsuario ])
 
     return(
-        <article className="w-12/12 h-12/12 flex flex-col justify-center items-center p-8">
-            <div className="w-12/12 h-12/12 p-6 space-y-4 md:space-y-6 sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col">
-                <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            <>
+                <h1 className="text-base sm:text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                     Registro
                 </h1>
-                <form className="grid sm:grid-cols-2 grid-cols-1 gap-6" onSubmit={(e) => saveForm(e)}>
-                        <input type="text" name="nombreR" id="nombreR" placeholder="Ingresa tu nombre" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                        <input type="text" name="apellidoR" id="apellidoR" placeholder="Ingresa tu apellido" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                        <input type="email" name="emailR" id="emailR" placeholder="Ingresa tu email" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                <form className="grid place-items-center w-full h-full text-sm sm:grid-cols-2 grid-cols-1 sm:gap-4 pb-5" onSubmit={(e) => saveForm(e)}>
+                        <input type="text" name="nombreR" id="nombreR" placeholder="Ingresa tu nombre" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
+                        <input type="text" name="apellidoR" id="apellidoR" placeholder="Ingresa tu apellido" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
+                        <input type="email" name="emailR" id="emailR" placeholder="Ingresa tu email" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
                         {/* ATENCIOOOOOON
                         luego incrementar seguridad de credencial contraseña con expresiones regulares u otra medida */}
-                        <input type="password" name="passwordR" id="passwordR" placeholder="Ingresa tu contraseña" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                        <select name="generoR" id="generoR" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required >
+                        <input type="password" name="passwordR" id="passwordR" placeholder="Ingresa tu contraseña" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
+                        <select name="generoR" id="generoR" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white" required >
                             <option value="">Selecciona tu género</option>
                             <option value="M">masculino</option>
                             <option value="F">femenino</option>
                             <option value="O">otro</option>
                         </select>
-                        <select name="RolR" id="rolR" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-2xl w-full h-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required >
+                        <select name="RolR" id="rolR" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white" required >
                             <option value="">Selecciona tu rol</option>
                             <option value="E">estudiante</option>
                             <option value="P">profesor</option>
-                            <option value="A">administrador</option>
                         </select>
-                    <button type="submit" className="w-full h-fit p-2 rounded-2xl text-white bg-gray-900 hover:bg-slate-800 text-center">Registrate</button>
-                    <a href="#" className="text-sm w-full text-center font-medium text-primary-600 hover:underline text-white dark:text-primary-500 ml-2">¿Ya tienes cuenta?</a>
+                    <button type="submit" className="w-full max-w-60 h-fit max-h-24 p-0.5 sm:p-2.5 rounded-2xl text-white bg-gray-900 hover:bg-slate-800 text-center">Registrate</button>
+                    <a href="#" className="w-full max-w-60 text-center font-medium text-primary-600 hover:underline text-white dark:text-primary-500 ml-2" 
+                    onClick={()=>setFlipped(false)}>¿Ya tienes cuenta?</a>
                 </form>
-            </div>
-        </article>
+            </>
     )
 }
 
