@@ -32,6 +32,7 @@ const Register = ({ funcUsuario, setFlipped }) => {
                     const respuesta = await fetch(URL, {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
+                        credentials: 'include',
                         body: JSON.stringify(formData)
                     })
                     if(!respuesta.ok){ {
@@ -39,9 +40,10 @@ const Register = ({ funcUsuario, setFlipped }) => {
                             console.error("Ha ocurrido el siguiente problema", errorData)
                     }}
                     const data = await respuesta.json()
-                    funcUsuario(data)
-                }catch(err){
-                    console.log("Ha ocurrido un error no documentado: ",err)
+                    console.log(data)
+                    funcUsuario(data, data.access)
+                }catch(e){
+                    console.log(`Ha ocurrido un error no documentado: ${e}`)
                 }
             }
         }

@@ -1,20 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 
-const Login = ({ setFlipped }) => {
+const Login = ({ setFlipped, funcUsuario }) => {
 
     //cambiar URL del endpoint en cuestion
-    const URL = "http://localhost:8000/api/usuarios/"
+    const URL = "http://localhost:8000/api/login/"
 
     const [form, setForm] = useState({
         email: "",
         password: ""
     })
-
-    //proxima funcionalidad si se implementa JWT
-    // const [ passwordSaved, setPasswordSaved ] = useState(false);
-    // const savePassword = () => {
-    //     setPasswordSaved(prev => !prev)
-    // }
 
     const saveForm = useCallback((e) => {
         e.preventDefault();
@@ -29,26 +23,27 @@ const Login = ({ setFlipped }) => {
 
             const sendForm = async () => {
                 try {
-                    //endpoint de prueba, (cambialo cuando tengas el oficial)
                     const datosEnviados = await fetch(URL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
+                        credentials: 'include',
                         body: JSON.stringify(form)
                     });
                     if (!datosEnviados.ok) {
                         const respuestaFallida = await datosEnviados.json()
                         console.error(respuestaFallida)
                     }
-                    const respuestaCorrecta = await datosEnviados.json()
+                    const data = await datosEnviados.json()
                     //datos recibidos
-                    console.log(respuestaCorrecta)
+                    console.log(data)
+                    funcUsuario(data, data.access)
                 } catch (e) {
                     console.error("Ha ocurrido un error", e)
                 }
             }
             sendForm();
         }
-    }, [form])
+    }, [form, funcUsuario])
 
 
     return (
@@ -68,7 +63,7 @@ const Login = ({ setFlipped }) => {
                     <p className="text-white">Recordar datos</p>
                 </label>
                 <div className="flex justify-center items-center flex-col w-fit h-fit p-1 sm:p-4 gap-3">
-                    <button type="submit" className="w-full max-w-60 h-fit max-h-24 p-1.5 sm:p-2.5 rounded-2xl text-white bg-gray-900 hover:bg-slate-800 text-center">Registrate</button>
+                    <button type="submit" className="w-full max-w-60 h-fit max-h-24 p-1.5 sm:p-2.5 rounded-2xl text-white bg-gray-900 hover:bg-slate-800 text-center">Iniciar sesión</button>
                     <a href="#" className="w-full max-w-60 text-center text-base font-medium text-primary-600 hover:underline text-white dark:text-primary-500 p-4"
                         onClick={() => setFlipped(true)}>¿No te has registrado aún?</a>
                 </div>

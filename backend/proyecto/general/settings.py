@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import dj_database_url
 
 
 load_dotenv()
@@ -17,16 +16,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s3fhyx5h^4z(4k9wgwzw0g()-&bbeipm1pk87!&*-4#k!i-mc-'
+SECRET_KEY = 'django-insecure-s3fhyx5h^4z(4k9wgwzw0g()-&bbeipm1pk87!&*-4#k!i-mc-' #pasar la key a un env 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,7 +33,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -74,12 +71,18 @@ ASGI_APPLICATION = 'general.asgi.application'
 
 DATABASES = {
     "default": {
+        # ACTUALMENTE HAY PROBLEMAS COMO EL SERVER SE CONECTA A LA BD, PETA CON EL .ENV REVISAR!
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "proyecto_db"),
-        "USER": os.environ.get("POSTGRES_USER", "danos"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "1601"),
-        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
-        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+        # "NAME": os.environ.get("POSTGRES_DB", "semana3"),
+        # "USER": os.environ.get("POSTGRES_USER", "postgres"),
+        # "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "1234"),
+        # "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        # "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+            "NAME": "semana3",
+            "USER": "postgres",
+            "PASSWORD": "1234",
+            "HOST": "localhost",
+            "PORT": "5432"
     }
 }
 
@@ -143,6 +146,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
