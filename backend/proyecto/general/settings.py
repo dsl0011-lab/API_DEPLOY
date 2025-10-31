@@ -4,7 +4,25 @@ from pathlib import Path
 
 # --- Rutas base ---
 BASE_DIR = Path(__file__).resolve().parent.parent  # .../backend/proyecto
-load_dotenv(BASE_DIR / ".env")
+
+# 2) Cargar .env de forma robusta
+try:
+    from dotenv import load_dotenv, find_dotenv
+    # intenta el .env en BASE_DIR primero
+    env_path = BASE_DIR / ".env"
+    if env_path.exists():
+        load_dotenv(env_path)
+    else:
+        # búsqueda ascendente por si cambia el cwd
+        load_dotenv(find_dotenv(filename=".env", usecwd=True))
+except Exception as e:
+    print("DOTENV WARNING:", e)
+
+# 3) Debug temporal
+#print("ENV DEBUG -> BASE_DIR:", BASE_DIR)
+#print("ENV DEBUG -> .env exists:", (BASE_DIR / ".env").exists())
+#print("ENV DEBUG -> DB_NAME:", os.getenv("DB_NAME"))
+
 
 load_dotenv()
 
@@ -30,15 +48,18 @@ from datetime import timedelta
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'api',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
+    "api",
+    "cursos",
 ]
 
 MIDDLEWARE = [
@@ -154,11 +175,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "http://localhost:5173/"]
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# --- Otros ---
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
