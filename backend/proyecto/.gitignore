@@ -1,7 +1,9 @@
-# Python cache
 __pycache__/
-*.py[cod]
+*.pyc
+*.log
+*.pot
+*.pyc
 *.pyo
 *.pyd
-*.pyc
 .env
+.env.*
