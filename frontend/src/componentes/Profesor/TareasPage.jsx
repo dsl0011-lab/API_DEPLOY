@@ -109,7 +109,6 @@ export default function TareasPage() {
       setBusyId(null);
     }
   }
-
   return (
     <div>
       <h1 className="text-xl font-bold mb-3">Tareas (todas mis clases)</h1>
