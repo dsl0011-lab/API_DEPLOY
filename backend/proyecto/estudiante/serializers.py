@@ -12,7 +12,7 @@ class EstudianteTareaSerializer(serializers.ModelSerializer):
     curso = serializers.CharField(source='curso.nombre')
     class Meta:
         model = Tarea
-        fields = ['titulo', 'descripcion', 'fecha_entrega', 'curso']
+        fields = '__all__'
 
 class EstudianteCalificacionSerializer(serializers.ModelSerializer):
     class Meta:

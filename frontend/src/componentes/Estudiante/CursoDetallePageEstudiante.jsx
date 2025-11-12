@@ -17,7 +17,7 @@ function CursoDetallePageEstudiante() {
     return (
         <>{
             asignatura !== null && <div className='h-[300px] w-full flex items-start justify-center'>
-                <div key={asignatura.id} className="w-full h-full flex flex-col justify-center items-center rounded-md relative">
+                <div key={asignatura.id} className="flex flex-col justify-center items-center rounded-md relative">
                     <div className="absolute inset-0 bg-cover bg-center filter opacity-50"
                         style={{ backgroundImage: `URL(${imagenesRandom()})`, backgroundSize: "cover", filter: "blur(6px)" }}
                     ></div>

@@ -5,6 +5,7 @@ import { apiFetch } from '../Profesor/api';
 const TareasEstudiante = () => {
 const [tareas, setTareas] = useState([]);
     useEffect(() => { apiFetch("/estudiante/tareas/").then(setTareas) }, []);
+
     return (
         <div className='w-full h-full'>
             <h3 className="text-xl font-bold mb-3">Tareas (todas mis clases)</h3>
