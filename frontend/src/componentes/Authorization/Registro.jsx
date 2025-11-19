@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
+import { LoadingContext } from "../useContext/LoadingContext";
 
 const Register = ({ funcUsuario, setFlipped }) => {
-
+    const { setLoading } = useContext(LoadingContext)
     const URL = "http://localhost:8000/api/auth/register/"
+    const [ error, setError ] = useState(false)
 
     const [ formData, setFormData ] = useState({
         full_name: "",
@@ -34,26 +36,26 @@ const Register = ({ funcUsuario, setFlipped }) => {
                         credentials: 'include',
                         body: JSON.stringify(formData)
                     })
-                    if(!respuesta.ok){ {
-                            const errorData = await respuesta.json()
-                            console.error("Ha ocurrido el siguiente problema", errorData)
-                    }}
+                    setLoading(true)
+                    if(!respuesta.ok) return setError(true)
                     const data = await respuesta.json()
-                    console.log(data)
                     funcUsuario(data)
-                }catch(e){
-                    console.log(`Ha ocurrido un error no documentado: ${e}`)
+                }catch{
+                    setError(true)
+                }finally{
+                    setLoading(false)
                 }
             }
         }
         sendData();
-    },[formData, funcUsuario ])
+    },[formData, funcUsuario, setLoading ])
 
     return(
             <>
                 <h1 className="text-base sm:text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                     Registro
                 </h1>
+                {error !== false && <p className="text-white pl-2 pr-2">Ha ocurrido un error, vuelve a intentarlo más tarde.</p>}
                 <form className="grid place-items-center w-full h-full text-sm sm:grid-cols-2 grid-cols-1 sm:gap-4 pb-5" onSubmit={(e) => saveForm(e)}>
                         <input type="text" name="first_name" id="first_name" placeholder="Ingresa tu nombre" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
                         <input type="text" name="last_name" id="last_name" placeholder="Ingresa tus apellidos" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />

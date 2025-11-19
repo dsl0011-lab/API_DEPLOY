@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { LoadingContext } from "../useContext/LoadingContext";
 
 const Login = ({ setFlipped, funcUsuario }) => {
-
     //cambiar URL del endpoint en cuestion
     const URL = "http://localhost:8000/api/auth/token/"
-
+    const { setLoading } = useContext(LoadingContext)
+    const [ error, setError ] = useState(false)
     const [form, setForm] = useState({
         username: "",
         password: ""
@@ -28,24 +29,25 @@ const Login = ({ setFlipped, funcUsuario }) => {
                         credentials: 'include',
                         body: JSON.stringify(form)
                     });
+                    setLoading(true)
                     const data = await datosEnviados.json().catch(() => null)
-                    if (!datosEnviados.ok) {
-                        console.error(data || { status: datosEnviados.status })
-                        return
-                    }
-                    if (data) funcUsuario(data)
-                } catch (e) {
-                    console.error("Ha ocurrido un error", e)
+                    if (!datosEnviados.ok) return setError(true)
+                    if (data) return funcUsuario(data)
+                } catch {
+                    setError(true)
+                }finally{
+                    setLoading(false)
                 }
             }
             sendForm();
         }
-    }, [form, funcUsuario])
+    }, [form, funcUsuario, setLoading])
 
     return (
         <>
             <h1 className="text-2xl font-bold w-full h-fit leading-tight tracking-tight dark:text-white p-2">Inicio de Sesión</h1>
-            <form onSubmit={(e) => saveForm(e)} className="w-full h-full flex flex-col items-center justify-center gap-6 py-5 text-sm sm:text-base">
+            {error !== false && <p className="text-white pl-2 pr-2">Ha ocurrido un error, vuelve a intentarlo más tarde.</p>}
+            <form onSubmit={(e) => saveForm(e)} className="w-full h-full flex flex-col items-center justify-start pt-4 gap-6 text-sm sm:text-base">
                 <input type="text" name="usernameR" id="usernameR" placeholder="Ingresa nick/username" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 sm:max-w-96 h-auto p-1.5 sm:p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
                 <input type="password" name="passwordL" id="passwordL" placeholder="Ingresa tu contraseña" autoComplete="off" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 sm:max-w-96 h-auto p-1.5 sm:p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
                 {/* Inicio de sesión con JWT */}

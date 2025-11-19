@@ -6,6 +6,8 @@ import arrow from '../../assets/btn-arrow.svg'
 import exit from '../../assets/exit.svg'
 import Sidebar from "./Sidebar"
 import Inicio from "./Inicio"
+import Loading from "../PantallaLoading/Loading"
+
 
 const Dashboard = () => {
     const { setUsuario } = useContext(UsuarioContext)
