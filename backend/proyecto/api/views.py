@@ -1,7 +1,6 @@
 # backend/proyecto/api/views.py
 
 from rest_framework.response import Response
-# from urllib import response
 from rest_framework import viewsets, status, filters, permissions
 from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
@@ -12,6 +11,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.views import TokenVerifyView
+from rest_framework.views import APIView
 from rest_framework import status
 from django.conf import settings
 
@@ -19,6 +19,7 @@ from .models import UsuarioPersonalizado
 from .serializers import (
     UsuarioPersonalizadoSerializer,
     RegistroSerializer,
+    UserPublicSerializer #---
 )
 from authentication import CookieJWTAuthentication #middleware personalizado para leer token desde cookie httponly
 
@@ -258,10 +259,12 @@ class MyTokenObtainPairView(TokenObtainPairView):
             return Response({"respuesta": "Credenciales inválidas"}, status=401)
         access_token = serializer.validated_data.get("access") or super().get_serializer().get_token(serializer.user).access_token
         refresh_token = super().get_serializer().get_token(serializer.user)
+        max_age_value = 60*60*24*365 if request.data.get("recordar") else None
         response = Response(serializer.validated_data, status=status.HTTP_200_OK)
         response.set_cookie(
             key="jwt",
             value=str(access_token),
+            max_age=320,
             httponly=True,
             samesite="Lax",
             secure=False,
@@ -270,6 +273,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
         response.set_cookie(
             key="refresh_token",
             value=str(refresh_token),
+            max_age=max_age_value,
             httponly=True,
             samesite="Lax",
             secure=False,
@@ -277,6 +281,45 @@ class MyTokenObtainPairView(TokenObtainPairView):
         )
         return response
 
+
+class InicioAutomatico(APIView):
+    def post(self, request):
+        token = request.COOKIES.get("refresh_token")
+        if not token:
+            return Response({"Mensaje": "No hay un token para validar, intentalo nuevamente con un token valido"})
+        try:
+            refresh = RefreshToken(token)
+            user_id = refresh["user_id"]
+            Usuario = UsuarioPersonalizado.objects.get(id=user_id)
+            serializer_class = UserPublicSerializer(Usuario)
+            new_refresh = RefreshToken.for_user(Usuario)
+            new_access = str(new_refresh.access_token)
+            response = Response({ "usuario": serializer_class.data })
+            print("aqui funciona inicio automatico", response)
+            response.set_cookie(
+                key="jwt",
+                value=str(new_access),
+                max_age=320,
+                httponly=True,
+                samesite="Lax",
+                secure=False,
+                domain=None
+            )
+            response.set_cookie(
+                key="refresh_token",
+                value=str(new_refresh),
+                httponly=True,
+                max_age=60*60*24*365,
+                samesite="Lax",
+                secure=False,
+                domain=None
+            )
+            return response
+        except Exception as e:
+            return Response(
+                {"Mensaje": "Error inesperado, vuelve a intentarlo más tarde."},
+                status=500
+            )
 
 @api_view(["POST"])
 @permission_classes([AllowAny]) 
@@ -307,6 +350,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             # opcional: eliminar del body los tokens
             del response.data["access"]
         return response
+    
 
 
 class CookieTokenVerifyView(TokenVerifyView):

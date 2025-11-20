@@ -25,7 +25,7 @@ export default function MensajeriaPage() {
       try {
         await marcarLeidos(sel.id)
         setConvs(prev => prev.map(x => x.id === sel.id ? { ...x, no_leidos: 0 } : x))
-      } catch {}
+      } catch(e) {setErr(e)}
     }).catch(()=>{})
     return ()=> { alive = false }
   }, [sel?.id])
@@ -49,7 +49,7 @@ export default function MensajeriaPage() {
       setMsgs(prev => [...prev, m])
       // refresca último mensaje en la lista
       setConvs(prev => prev.map(x => x.id === sel.id ? { ...x, ultimo_mensaje: m } : x))
-    } catch (e) {}
+    } catch(e){setErr(e)}
   }
 
   const onUpdateAsunto = async (nuevoAsunto) => {
@@ -67,7 +67,7 @@ export default function MensajeriaPage() {
       setConvs(prev => prev.filter(x => x.id !== sel.id))
       setSel(null)
       setMsgs([])
-    } catch (e) {
+    } catch{
       setErr('No se pudo eliminar la conversación')
     }
   }
@@ -77,7 +77,7 @@ export default function MensajeriaPage() {
       const c = await crearConversacion({ asunto: '', usernames: [user.username] })
       setConvs(prev => [c, ...prev])
       setSel(c)
-    } catch (e) {
+    } catch{
       setErr('No se pudo iniciar la conversación')
     }
   }

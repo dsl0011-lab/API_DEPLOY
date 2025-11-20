@@ -40,7 +40,7 @@ class LoginSerializer(serializers.Serializer):
 class UserPublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsuarioPersonalizado
-        fields = ("id", "username", "email")
+        fields = ["id", "username", "first_name", "last_name", "gender", "role"]
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

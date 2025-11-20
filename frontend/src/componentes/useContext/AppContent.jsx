@@ -4,7 +4,6 @@ import { useContext } from 'react';
 import { UsuarioContext } from './UsuarioContext';
 import Dashboard from '../Dashboard/Dashboard';
 import PrivateRoute from '../Authorization/PrivateRoute';
-import ProfileCard from '../Dashboard/ProfileCard';
 import Perfil from '../Dashboard/Perfil';
 import Asignaturas from '../Dashboard/Asignaturas';
 import AsignaturaDetalle from '../Dashboard/AsignaturaDetalle';

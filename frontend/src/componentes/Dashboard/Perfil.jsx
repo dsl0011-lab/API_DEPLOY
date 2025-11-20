@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UsuarioContext } from "../useContext/UsuarioContext";
 import { apiFetch } from "../Profesor/api";
+import ComponenteLoading from '../PantallaLoading/ComponenteLoading';
 
 const Perfil = () => {
   const { usuario, setUsuario } = useContext(UsuarioContext);
@@ -220,7 +221,7 @@ const Perfil = () => {
   };
 
   if (!usuario?.role || loading) {
-    return <p className="text-white">Cargando perfil...</p>;
+    return <ComponenteLoading />
   }
 
   const labelAsignaturas =

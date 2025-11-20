@@ -1,16 +1,18 @@
-import React from 'react'
 import { useEffect, useState } from "react";
 import { apiFetch } from '../Profesor/api';
 import { convertirFecha } from './scripts/conversionFecha'
+import ComponenteLoading from '../PantallaLoading/ComponenteLoading';
 
 const TareasEstudiante = () => {
 const [tareas, setTareas] = useState([]);
     useEffect(() => { apiFetch("/estudiante/tareas/").then(setTareas) }, []);
 
     return (
-        <div className='w-full h-full bg-gray-900 p-4 text-xs md:text-base rounded-2xl'>
+        <div className='w-full h-full min-h-64 bg-gray-900 p-4 text-xs md:text-base rounded-2xl'>
             <h3 className="font-bold text-center mb-3">Tareas (todas mis clases)</h3>
-            <ul className="flex flex-wrap gap-8 w-full h-fit">
+            {
+                tareas.length > 0 ? 
+                <ul className="flex flex-wrap gap-8 w-full h-fit">
                 {tareas.map(t => (
                     <li key={t.id} className="flex-1 flex flex-col gap-2 border-double border-2 border-sky-950 p-4 rounded-3xl md:min-w-[500px] xs:min-w-[250px] min-w-[150px]">
                         <div className="flex-1 flex flex-col gap-2 font-semibold">
@@ -25,6 +27,8 @@ const [tareas, setTareas] = useState([]);
                         </div>
                 </li>))}
             </ul>
+            : tareas.length === 0 ? (<p>No tienes tareas asignadas aún</p>) : (<ComponenteLoading />)
+            }
         </div>
     );
 }

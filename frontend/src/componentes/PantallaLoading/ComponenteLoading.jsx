@@ -1,9 +1,5 @@
-// import { useContext } from 'react'
-// import { LoadingContext } from '../useContext/LoadingContext';
 
-export default function Loading() {
-
-    // const { Loading } = useContext(LoadingContext)
+export default function ComponenteLoading() {
 
     return (
         <section className='absolute inset-0 z-50 bg-black/50'>

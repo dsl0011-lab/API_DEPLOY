@@ -1,7 +1,7 @@
 import Register from './Registro';
 import Login from './Login';
-import ComponenteLoading from '../PantallaLoading/Loading';
-import Logo from '../../assets/logo-2.png';
+import Logo from '../../assets/logo-2.png'
+import ComponenteLoading from '../PantallaLoading/ComponenteLoading';
 import { UsuarioContext } from '../useContext/UsuarioContext';
 import { LoadingContext } from '../useContext/LoadingContext';
 import { useState, useCallback, useContext } from 'react';
@@ -12,7 +12,6 @@ const Auth = () => {
   const { setUsuario } = useContext(UsuarioContext);
   const { Loading } = useContext(LoadingContext);
   const navigate = useNavigate();
-
 
   const funcUsuario = useCallback((informacion) => {
     if (informacion) {
