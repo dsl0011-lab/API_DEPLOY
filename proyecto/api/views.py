@@ -330,8 +330,6 @@ def logout(request):
     return response
 
 
-
-
 class CookieTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         refresh_token = request.COOKIES.get("refresh_token")
