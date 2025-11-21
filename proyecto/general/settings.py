@@ -116,10 +116,10 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # NO STATICFILES_DIRS EN RENDER
 
-# --- CORS ---
 ALLOWED_HOSTS = [
     "api-deploy-wyep.onrender.com",
     "frontend-deploy-eosin.vercel.app",
+    "frontend-deploy-qbcz.vercel.app", 
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -127,6 +127,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "https://api-deploy-wyep.onrender.com",
     "https://frontend-deploy-eosin.vercel.app",
+    "https://frontend-deploy-qbcz.vercel.app", 
 ]
 
 CORS_ALLOW_CREDENTIALS = True
