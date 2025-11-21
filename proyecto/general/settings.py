@@ -62,7 +62,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,8 +88,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'general.wsgi.application'
-ASGI_APPLICATION = 'general.asgi.application'
+# WSGI_APPLICATION = 'general.wsgi.application'
+# ASGI_APPLICATION = 'general.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
