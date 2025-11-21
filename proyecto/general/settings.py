@@ -175,8 +175,8 @@ STATICFILES_DIRS = [
 
 
 ALLOWED_HOSTS = [
-    'https://api-deploy-wyep.onrender.com',
-    'https://frontend-deploy-eosin.vercel.app',
+    'api-deploy-wyep.onrender.com',
+    'frontend-deploy-eosin.vercel.app',
     ]
 
 CORS_ALLOW_CREDENTIALS = True
