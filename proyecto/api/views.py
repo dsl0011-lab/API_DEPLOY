@@ -168,22 +168,22 @@ def register_user(request):
             "role": user.role,
         }
         response = Response(response_data, status=status.HTTP_201_CREATED)
-        # response.set_cookie(
-        #     key="jwt",
-        #     value=access_token,
+        response.set_cookie(
+            key="jwt",
+            value=access_token,
         #     httponly=True,
         #     secure=True,
         #     samesite="None",
         #     domain="api-deploy-wyep.onrender.com"  # <--- crucial para cross-site
-        # )
-        # response.set_cookie(
-        #     key="refresh_token",
-        #     value=str(refresh),
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=str(refresh),
         #     httponly=True,
         #     secure=True,
         #     samesite="None",
         #     domain="api-deploy-wyep.onrender.com"
-        # )
+        )
 
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -262,21 +262,21 @@ class MyTokenObtainPairView(TokenObtainPairView):
         refresh_token = super().get_serializer().get_token(serializer.user)
         max_age_value = 60*60*24*365 if request.data.get("recordar") else None
         response = Response(serializer.validated_data, status=status.HTTP_200_OK)
-        # response.set_cookie(
-        #     key="jwt",
-        #     value=access_token,
+        response.set_cookie(
+            key="jwt",
+            value=access_token,
         #     httponly=True,
         #     secure=True,
         #     samesite="None",
-        # )
-        # response.set_cookie(
-        #     key="refresh_token",
-        #     value=str(refresh_token),
-        #     max_age=max_age_value,
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=str(refresh_token),
+            max_age=max_age_value,
         #     httponly=True,
         #     secure=True,
         #     samesite="None",
-        # )
+        )
         return response
 
 
@@ -293,21 +293,21 @@ class InicioAutomatico(APIView):
             new_refresh = RefreshToken.for_user(Usuario)
             new_access = str(new_refresh.access_token)
             response = Response({ "usuario": serializer_class.data })
-            # response.set_cookie(
-            #     key="jwt",
-            #     value=str(new_access),
-            #     httponly=True,
-            #     secure=True,
-            #     samesite="None",
-            # )
-            # response.set_cookie(
-            #     key="refresh_token",
-            #     value=str(new_refresh),
-            #     max_age=60*60*24*365,
-            #     httponly=True,
-            #     secure=True,
-            #     samesite="None",
-            # )   
+            response.set_cookie(
+                key="jwt",
+                value=str(new_access),
+                # httponly=True,
+                # secure=True,
+                # samesite="None",
+            )
+            response.set_cookie(
+                key="refresh_token",
+                value=str(new_refresh),
+                max_age=60*60*24*365,
+                # httponly=True,
+                # secure=True,
+                # samesite="None",
+            )   
             return response
         except Exception as e:
             return Response(
