@@ -171,18 +171,18 @@ def register_user(request):
         response.set_cookie(
             key="jwt",
             value=access_token,
-        #     httponly=True,
-        #     secure=True,
-        #     samesite="None",
-        #     domain="api-deploy-wyep.onrender.com"  # <--- crucial para cross-site
+            max_age=320,
+            httponly=True,
+            secure=True,
+            samesite="None",
         )
         response.set_cookie(
             key="refresh_token",
             value=str(refresh),
-        #     httponly=True,
-        #     secure=True,
-        #     samesite="None",
-        #     domain="api-deploy-wyep.onrender.com"
+            max_age=60*60*24*365,
+            httponly=True,
+            secure=True,
+            samesite="None",
         )
 
         return response
@@ -265,17 +265,18 @@ class MyTokenObtainPairView(TokenObtainPairView):
         response.set_cookie(
             key="jwt",
             value=access_token,
-        #     httponly=True,
-        #     secure=True,
-        #     samesite="None",
+            max_age=320,
+            httponly=True,
+            secure=True,
+            samesite="None",
         )
         response.set_cookie(
             key="refresh_token",
             value=str(refresh_token),
             max_age=max_age_value,
-        #     httponly=True,
-        #     secure=True,
-        #     samesite="None",
+            httponly=True,
+            secure=True,
+            samesite="None",
         )
         return response
 
@@ -296,17 +297,18 @@ class InicioAutomatico(APIView):
             response.set_cookie(
                 key="jwt",
                 value=str(new_access),
-                # httponly=True,
-                # secure=True,
-                # samesite="None",
+                max_age=320,
+                httponly=True,
+                secure=True,
+                samesite="None",
             )
             response.set_cookie(
                 key="refresh_token",
                 value=str(new_refresh),
                 max_age=60*60*24*365,
-                # httponly=True,
-                # secure=True,
-                # samesite="None",
+                httponly=True,
+                secure=True,
+                samesite="None",
             )   
             return response
         except Exception as e:
@@ -332,7 +334,7 @@ def logout(request):
     return response
 
 
-class CookieTokenRefreshView(TokenRefreshView):
+class CookieTokenRefreshView(TokenRefreshView): ##################333
     def post(self, request, *args, **kwargs):
         refresh_token = request.COOKIES.get("refresh_token")
         if not refresh_token:
@@ -342,14 +344,15 @@ class CookieTokenRefreshView(TokenRefreshView):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200 and "access" in response.data:
             # Guardar el nuevo access token en cookie HttpOnly
-            # response.set_cookie(
-            #     key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # normalmente "jwt"
-            #     value=response.data["access"],
-            #     httponly=True,
-            #     max_age=320,
-            #     secure=True,  # obligatorio en producción HTTPS
-            #     samesite="None",  # cross-site
-            # )
+            response.set_cookie(
+                # key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # normalmente "jwt"
+                key="jwt",
+                value=response.data["access"],
+                httponly=True,
+                max_age=320,
+                secure=True,  # obligatorio en producción HTTPS
+                samesite="None",  # cross-site
+            )
             # opcional: eliminar del body los tokens
             del response.data["access"]
         return response
