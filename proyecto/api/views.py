@@ -319,16 +319,16 @@ class InicioAutomatico(APIView):
 @permission_classes([AllowAny]) 
 def logout(request):
     response = Response({"respuesta": "Sesión cerrada"})
-    # response.delete_cookie("jwt")
-    # response.delete_cookie("refresh_token")
-    response.delete_cookie(
-        "jwt",
-        path="/",
-    )
-    response.delete_cookie(
-        "refresh_token",
-        path="/",
-    )
+    response.delete_cookie("jwt")
+    response.delete_cookie("refresh_token")
+    # response.delete_cookie(
+    #     "jwt",
+    #     path="/",
+    # )
+    # response.delete_cookie(
+    #     "refresh_token",
+    #     path="/",
+    # )
     return response
 
 
