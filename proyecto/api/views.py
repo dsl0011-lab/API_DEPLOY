@@ -1,4 +1,3 @@
-# backend/proyecto/api/views.py
 
 from rest_framework.response import Response
 from rest_framework import viewsets, status, filters, permissions
@@ -168,23 +167,7 @@ def register_user(request):
             "role": user.role,
         }
         response = Response(response_data, status=status.HTTP_201_CREATED)
-        response.set_cookie(
-            key="jwt",
-            value=access_token,
-            max_age=320,
-            httponly=True,
-            secure=True,
-            samesite="None",
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=str(refresh),
-            max_age=60*60*24*365,
-            httponly=True,
-            secure=True,
-            samesite="None",
-        )
-
+        response = Create_http_cookie(response, access_token, refresh)
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -260,24 +243,9 @@ class MyTokenObtainPairView(TokenObtainPairView):
             return Response({"respuesta": "Credenciales inválidas"}, status=401)
         access_token = serializer.validated_data.get("access") or super().get_serializer().get_token(serializer.user).access_token
         refresh_token = super().get_serializer().get_token(serializer.user)
-        max_age_value = 60*60*24*365 if request.data.get("recordar") else None
+        token_recordar = request.data.get("recordar")
         response = Response(serializer.validated_data, status=status.HTTP_200_OK)
-        response.set_cookie(
-            key="jwt",
-            value=access_token,
-            max_age=320,
-            httponly=True,
-            secure=True,
-            samesite="None",
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=str(refresh_token),
-            max_age=max_age_value,
-            httponly=True,
-            secure=True,
-            samesite="None",
-        )
+        response = Create_http_cookie(response, access_token, refresh_token, token_recordar)
         return response
 
 
@@ -294,22 +262,8 @@ class InicioAutomatico(APIView):
             new_refresh = RefreshToken.for_user(Usuario)
             new_access = str(new_refresh.access_token)
             response = Response({ "usuario": serializer_class.data })
-            response.set_cookie(
-                key="jwt",
-                value=str(new_access),
-                max_age=320,
-                httponly=True,
-                secure=True,
-                samesite="None",
-            )
-            response.set_cookie(
-                key="refresh_token",
-                value=str(new_refresh),
-                max_age=60*60*24*365,
-                httponly=True,
-                secure=True,
-                samesite="None",
-            )   
+            token_recordar = request.data.get("recordar")
+            response = Create_http_cookie(response, new_access, new_refresh, token_recordar)
             return response
         except Exception as e:
             return Response(
@@ -321,8 +275,8 @@ class InicioAutomatico(APIView):
 @permission_classes([AllowAny]) 
 def logout(request):
     response = Response({"respuesta": "Sesión cerrada"})
-    response.delete_cookie("jwt")
-    response.delete_cookie("refresh_token")
+    response.delete_cookie("jwt", path='/')
+    response.delete_cookie("refresh_token", path='/')
     # response.delete_cookie(
     #     "jwt",
     #     path="/",
@@ -334,7 +288,7 @@ def logout(request):
     return response
 
 
-class CookieTokenRefreshView(TokenRefreshView): ##################333
+class CookieTokenRefreshView(TokenRefreshView): ################
     def post(self, request, *args, **kwargs):
         refresh_token = request.COOKIES.get("refresh_token")
         if not refresh_token:
@@ -344,15 +298,8 @@ class CookieTokenRefreshView(TokenRefreshView): ##################333
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200 and "access" in response.data:
             # Guardar el nuevo access token en cookie HttpOnly
-            response.set_cookie(
-                # key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # normalmente "jwt"
-                key="jwt",
-                value=response.data["access"],
-                httponly=True,
-                max_age=320,
-                secure=True,  # obligatorio en producción HTTPS
-                samesite="None",  # cross-site
-            )
+            token_recordar = request.data.get("recordar")
+            response = Create_http_cookie(response, response.data["access"], refresh_token, token_recordar)
             # opcional: eliminar del body los tokens
             del response.data["access"]
         return response
@@ -366,3 +313,27 @@ class CookieTokenVerifyView(TokenVerifyView):
             return Response({"respuesta": "No hay token de acceso dentro de la cookie"}, status=status.HTTP_401_UNAUTHORIZED)
         request.data["token"] = access_token
         return super().post(request, *args, **kwargs)
+
+
+def Create_http_cookie(response, access_token=None, refresh_token=None, recordar=False):
+    max_age_value = 60*60*24*365 if recordar == True else None
+    if access_token:
+        response.set_cookie(
+            key="jwt",
+            value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="None",
+            path='/',
+        )
+    if refresh_token: 
+        response.set_cookie(
+            key="refresh_token",
+            value=str(refresh_token),
+            max_age=max_age_value,
+            httponly=True,
+            secure=True,
+            samesite="None",
+            path="/",
+        )
+    return response
