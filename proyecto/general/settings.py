@@ -102,7 +102,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_COOKIE": "jwt",
     "AUTH_COOKIE_HTTP_ONLY": True,
-    "AUTH_COOKIE_SECURE": True,  # Cambiar a True si usas HTTPS
+    "AUTH_COOKIE_SECURE": True,  # obligatorio en HTTPS
+    "AUTH_COOKIE_SAMESITE": "None",  
 }
 
 # --- International ---
@@ -129,7 +130,6 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://api-deploy-wyep.onrender.com",
     "https://frontend-deploy-eosin.vercel.app",
     "https://frontend-deploy-qbcz.vercel.app", 
 ]
