@@ -172,17 +172,23 @@ def register_user(request):
             key="jwt",
             value=access_token,
             httponly=True,
-            secure=False,  # True en HTTPS
-            samesite="Lax",
-            domain=None
+            # configuracion solo para desarrollo
+            # secure=False, 
+            # samesite="Lax",
+            # configuracion solo para produccón
+            secure=True,
+            samesite="None",
         )
         response.set_cookie(
             key="refresh_token",
             value=str(refresh),
             httponly=True,
-            samesite="Lax",
-            secure=False,
-            domain=None
+            # configuracion solo para desarrollo
+            # secure=False, 
+            # samesite="Lax",
+            # configuracion solo para produccón
+            secure=True,
+            samesite="None",
             )
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -263,22 +269,26 @@ class MyTokenObtainPairView(TokenObtainPairView):
         response = Response(serializer.validated_data, status=status.HTTP_200_OK)
         response.set_cookie(
             key="jwt",
-            value=str(access_token),
-            max_age=320,
+            value=access_token,
             httponly=True,
-            samesite="Lax",
-            secure=False,
-            domain=None
+            # configuracion solo para desarrollo
+            # secure=False, 
+            # samesite="Lax",
+            # configuracion solo para produccón
+            secure=True,
+            samesite="None",
         )
         response.set_cookie(
             key="refresh_token",
-            value=str(refresh_token),
-            max_age=max_age_value,
+            value=str(refresh),
             httponly=True,
-            samesite="Lax",
-            secure=False,
-            domain=None
-        )
+            # configuracion solo para desarrollo
+            # secure=False, 
+            # samesite="Lax",
+            # configuracion solo para produccón
+            secure=True,
+            samesite="None",
+            )
         return response
 
 
@@ -301,19 +311,25 @@ class InicioAutomatico(APIView):
                 value=str(new_access),
                 max_age=320,
                 httponly=True,
-                samesite="Lax",
-                secure=False,
-                domain=None
+                # configuracion solo para desarrollo
+                # secure=False, 
+                # samesite="Lax",
+                # configuracion solo para produccón
+                secure=True,
+                samesite="None",
             )
             response.set_cookie(
                 key="refresh_token",
                 value=str(new_refresh),
-                httponly=True,
                 max_age=60*60*24*365,
-                samesite="Lax",
-                secure=False,
-                domain=None
-            )
+                httponly=True,
+                # configuracion solo para desarrollo
+                # secure=False, 
+                # samesite="Lax",
+                # configuracion solo para produccón
+                secure=True,
+                samesite="None",
+            )   
             return response
         except Exception as e:
             return Response(
@@ -345,7 +361,8 @@ class CookieTokenRefreshView(TokenRefreshView):
                 value=response.data["access"],
                 httponly=True,
                 secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-                samesite="Lax"
+                # samesite="Lax", #descomentar en desarrollo
+                samesite="None"
             )
             # opcional: eliminar del body los tokens
             del response.data["access"]
