@@ -324,8 +324,18 @@ class InicioAutomatico(APIView):
 @permission_classes([AllowAny]) 
 def logout(request):
     response = Response({"respuesta": "Sesión cerrada"})
-    response.delete_cookie("jwt")
-    response.delete_cookie("refresh_token")
+    # response.delete_cookie("jwt")
+    # response.delete_cookie("refresh_token")
+    response.delete_cookie(
+        "jwt",
+        path="/",
+        domain="api-deploy-wyep.onrender.com"
+    )
+    response.delete_cookie(
+        "refresh_token",
+        path="/",
+        domain="api-deploy-wyep.onrender.com"
+    )
     return response
 
 
@@ -343,6 +353,7 @@ class CookieTokenRefreshView(TokenRefreshView):
                 key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # normalmente "jwt"
                 value=response.data["access"],
                 httponly=True,
+                max_age=320,
                 secure=True,  # obligatorio en producción HTTPS
                 samesite="None",  # cross-site
                 domain="api-deploy-wyep.onrender.com"  # crucial para que el navegador acepte la cookie
