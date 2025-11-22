@@ -361,8 +361,8 @@ class CookieTokenRefreshView(TokenRefreshView):
                 value=response.data["access"],
                 httponly=True,
                 secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-                # samesite="Lax", #descomentar en desarrollo
-                samesite="None"
+                samesite="Lax", #descomentar en desarrollo
+                # samesite="None"
             )
             # opcional: eliminar del body los tokens
             del response.data["access"]
