@@ -10,15 +10,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.views import TokenVerifyView
-from rest_framework.views import APIView
 from rest_framework import status
-from django.conf import settings
-
 from .models import UsuarioPersonalizado
 from .serializers import (
     UsuarioPersonalizadoSerializer,
     RegistroSerializer,
-    UserPublicSerializer #---
 )
 from authentication import CookieJWTAuthentication #middleware personalizado para leer token desde cookie httponly
 
@@ -236,6 +232,7 @@ def tareas_curso_para_alumno(request, curso_id: int):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
     def post(self, request, *args, **kwargs):
+        print(request.data)
         serializer = self.get_serializer(data=request.data)
         try:
             serializer.is_valid(raise_exception=True)
@@ -249,42 +246,12 @@ class MyTokenObtainPairView(TokenObtainPairView):
         return response
 
 
-class InicioAutomatico(APIView):
-    def post(self, request):
-        token = request.COOKIES.get("refresh_token")
-        if not token:
-            return Response({"Mensaje": "No hay un token para validar, intentalo nuevamente con un token valido"})
-        try:
-            refresh = RefreshToken(token)
-            user_id = refresh["user_id"]
-            Usuario = UsuarioPersonalizado.objects.get(id=user_id)
-            serializer_class = UserPublicSerializer(Usuario)
-            new_refresh = RefreshToken.for_user(Usuario)
-            new_access = str(new_refresh.access_token)
-            response = Response({ "usuario": serializer_class.data })
-            token_recordar = request.data.get("recordar")
-            response = Create_http_cookie(response, new_access, new_refresh, token_recordar)
-            return response
-        except Exception as e:
-            return Response(
-                {"Mensaje": "Error inesperado, vuelve a intentarlo más tarde."},
-                status=500
-            )
-
 @api_view(["POST"])
 @permission_classes([AllowAny]) 
 def logout(request):
     response = Response({"respuesta": "Sesión cerrada"})
     response.delete_cookie("jwt", path='/')
     response.delete_cookie("refresh_token", path='/')
-    # response.delete_cookie(
-    #     "jwt",
-    #     path="/",
-    # )
-    # response.delete_cookie(
-    #     "refresh_token",
-    #     path="/",
-    # )
     return response
 
 
@@ -299,6 +266,8 @@ class CookieTokenRefreshView(TokenRefreshView): ################
         if response.status_code == 200 and "access" in response.data:
             # Guardar el nuevo access token en cookie HttpOnly
             token_recordar = request.data.get("recordar")
+            if token_recordar == "recordarDatos=true":
+                token_recordar = True
             response = Create_http_cookie(response, response.data["access"], refresh_token, token_recordar)
             # opcional: eliminar del body los tokens
             del response.data["access"]
@@ -315,7 +284,7 @@ class CookieTokenVerifyView(TokenVerifyView):
         return super().post(request, *args, **kwargs)
 
 
-def Create_http_cookie(response, access_token=None, refresh_token=None, recordar=False):
+def Create_http_cookie(response, access_token=None, refresh_token=None, recordar=None):
     max_age_value = 60*60*24*365 if recordar == True else None
     if access_token:
         response.set_cookie(
