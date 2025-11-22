@@ -168,22 +168,22 @@ def register_user(request):
             "role": user.role,
         }
         response = Response(response_data, status=status.HTTP_201_CREATED)
-        response.set_cookie(
-            key="jwt",
-            value=access_token,
-            httponly=True,
-            secure=True,
-            samesite="None",
-            domain="api-deploy-wyep.onrender.com"  # <--- crucial para cross-site
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=str(refresh),
-            httponly=True,
-            secure=True,
-            samesite="None",
-            domain="api-deploy-wyep.onrender.com"
-        )
+        # response.set_cookie(
+        #     key="jwt",
+        #     value=access_token,
+        #     httponly=True,
+        #     secure=True,
+        #     samesite="None",
+        #     domain="api-deploy-wyep.onrender.com"  # <--- crucial para cross-site
+        # )
+        # response.set_cookie(
+        #     key="refresh_token",
+        #     value=str(refresh),
+        #     httponly=True,
+        #     secure=True,
+        #     samesite="None",
+        #     domain="api-deploy-wyep.onrender.com"
+        # )
 
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -262,21 +262,21 @@ class MyTokenObtainPairView(TokenObtainPairView):
         refresh_token = super().get_serializer().get_token(serializer.user)
         max_age_value = 60*60*24*365 if request.data.get("recordar") else None
         response = Response(serializer.validated_data, status=status.HTTP_200_OK)
-        response.set_cookie(
-            key="jwt",
-            value=access_token,
-            httponly=True,
-            secure=True,
-            samesite="None",
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=str(refresh_token),
-            max_age=max_age_value,
-            httponly=True,
-            secure=True,
-            samesite="None",
-        )
+        # response.set_cookie(
+        #     key="jwt",
+        #     value=access_token,
+        #     httponly=True,
+        #     secure=True,
+        #     samesite="None",
+        # )
+        # response.set_cookie(
+        #     key="refresh_token",
+        #     value=str(refresh_token),
+        #     max_age=max_age_value,
+        #     httponly=True,
+        #     secure=True,
+        #     samesite="None",
+        # )
         return response
 
 
@@ -293,22 +293,21 @@ class InicioAutomatico(APIView):
             new_refresh = RefreshToken.for_user(Usuario)
             new_access = str(new_refresh.access_token)
             response = Response({ "usuario": serializer_class.data })
-            print("aqui funciona inicio automatico", response)
-            response.set_cookie(
-                key="jwt",
-                value=str(new_access),
-                httponly=True,
-                secure=True,
-                samesite="None",
-            )
-            response.set_cookie(
-                key="refresh_token",
-                value=str(new_refresh),
-                max_age=60*60*24*365,
-                httponly=True,
-                secure=True,
-                samesite="None",
-            )   
+            # response.set_cookie(
+            #     key="jwt",
+            #     value=str(new_access),
+            #     httponly=True,
+            #     secure=True,
+            #     samesite="None",
+            # )
+            # response.set_cookie(
+            #     key="refresh_token",
+            #     value=str(new_refresh),
+            #     max_age=60*60*24*365,
+            #     httponly=True,
+            #     secure=True,
+            #     samesite="None",
+            # )   
             return response
         except Exception as e:
             return Response(
@@ -343,14 +342,14 @@ class CookieTokenRefreshView(TokenRefreshView):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200 and "access" in response.data:
             # Guardar el nuevo access token en cookie HttpOnly
-            response.set_cookie(
-                key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # normalmente "jwt"
-                value=response.data["access"],
-                httponly=True,
-                max_age=320,
-                secure=True,  # obligatorio en producción HTTPS
-                samesite="None",  # cross-site
-            )
+            # response.set_cookie(
+            #     key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # normalmente "jwt"
+            #     value=response.data["access"],
+            #     httponly=True,
+            #     max_age=320,
+            #     secure=True,  # obligatorio en producción HTTPS
+            #     samesite="None",  # cross-site
+            # )
             # opcional: eliminar del body los tokens
             del response.data["access"]
         return response
