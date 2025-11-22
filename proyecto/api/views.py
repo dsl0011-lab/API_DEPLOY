@@ -268,7 +268,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
             httponly=True,
             secure=True,
             samesite="None",
-            domain="api-deploy-wyep.onrender.com"  # <--- crucial para cross-site
         )
         response.set_cookie(
             key="refresh_token",
@@ -277,7 +276,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
             httponly=True,
             secure=True,
             samesite="None",
-            domain="api-deploy-wyep.onrender.com"
         )
         return response
 
@@ -302,7 +300,6 @@ class InicioAutomatico(APIView):
                 httponly=True,
                 secure=True,
                 samesite="None",
-                domain="api-deploy-wyep.onrender.com"
             )
             response.set_cookie(
                 key="refresh_token",
@@ -311,7 +308,6 @@ class InicioAutomatico(APIView):
                 httponly=True,
                 secure=True,
                 samesite="None",
-                domain="api-deploy-wyep.onrender.com"
             )   
             return response
         except Exception as e:
@@ -329,12 +325,10 @@ def logout(request):
     response.delete_cookie(
         "jwt",
         path="/",
-        domain="api-deploy-wyep.onrender.com"
     )
     response.delete_cookie(
         "refresh_token",
         path="/",
-        domain="api-deploy-wyep.onrender.com"
     )
     return response
 
@@ -356,7 +350,6 @@ class CookieTokenRefreshView(TokenRefreshView):
                 max_age=320,
                 secure=True,  # obligatorio en producción HTTPS
                 samesite="None",  # cross-site
-                domain="api-deploy-wyep.onrender.com"  # crucial para que el navegador acepte la cookie
             )
             # opcional: eliminar del body los tokens
             del response.data["access"]
