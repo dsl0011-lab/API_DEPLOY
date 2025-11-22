@@ -15,7 +15,8 @@ else:
 
 # --- Seguridad ---
 SECRET_KEY = os.getenv("SECRET_KEY", "insecure-key")
-DEBUG = False
+
+DEBUG = True #se debe colocar false en produccion
 
 # --- Apps ---
 INSTALLED_APPS = [
@@ -33,12 +34,13 @@ INSTALLED_APPS = [
     "cursos",
     "estudiante",
     "mensajeria",
+    "calificaciones",
 ]
 
 # --- Middleware ---
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware", #descomentar en producción
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -100,7 +102,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_COOKIE": "jwt",
     "AUTH_COOKIE_HTTP_ONLY": True,
-    "AUTH_COOKIE_SECURE": False,  # Cambiar a True si usas HTTPS
+    "AUTH_COOKIE_SECURE": True,  # obligatorio en HTTPS
+    "AUTH_COOKIE_SAMESITE": "None",  
 }
 
 # --- International ---
@@ -112,11 +115,13 @@ USE_TZ = True
 # --- Static ---
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" #descomentar en producción
 
 # NO STATICFILES_DIRS EN RENDER
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
     "api-deploy-wyep.onrender.com",
     "frontend-deploy-eosin.vercel.app",
     "frontend-deploy-qbcz.vercel.app", 
@@ -125,7 +130,6 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://api-deploy-wyep.onrender.com",
     "https://frontend-deploy-eosin.vercel.app",
     "https://frontend-deploy-qbcz.vercel.app", 
 ]

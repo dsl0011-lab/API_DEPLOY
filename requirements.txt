@@ -9,4 +9,8 @@ python-dotenv==1.1.1
 sqlparse==0.5.3
 tzdata==2025.2
 gunicorn==21.2.0
+<<<<<<< HEAD
 whitenoise==6.11.0
+=======
+whitenoise==6.11.0
+>>>>>>> main

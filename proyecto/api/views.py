@@ -172,18 +172,19 @@ def register_user(request):
             key="jwt",
             value=access_token,
             httponly=True,
-            secure=False,  # True en HTTPS
-            samesite="Lax",
-            domain=None
+            secure=True,
+            samesite="None",
+            domain="api-deploy-wyep.onrender.com"  # <--- crucial para cross-site
         )
         response.set_cookie(
             key="refresh_token",
             value=str(refresh),
             httponly=True,
-            samesite="Lax",
-            secure=False,
-            domain=None
-            )
+            secure=True,
+            samesite="None",
+            domain="api-deploy-wyep.onrender.com"
+        )
+
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -263,21 +264,20 @@ class MyTokenObtainPairView(TokenObtainPairView):
         response = Response(serializer.validated_data, status=status.HTTP_200_OK)
         response.set_cookie(
             key="jwt",
-            value=str(access_token),
-            max_age=320,
+            value=access_token,
             httponly=True,
-            samesite="Lax",
-            secure=False,
-            domain=None
+            secure=True,
+            samesite="None",
+            domain="api-deploy-wyep.onrender.com"  # <--- crucial para cross-site
         )
         response.set_cookie(
             key="refresh_token",
             value=str(refresh_token),
             max_age=max_age_value,
             httponly=True,
-            samesite="Lax",
-            secure=False,
-            domain=None
+            secure=True,
+            samesite="None",
+            domain="api-deploy-wyep.onrender.com"
         )
         return response
 
@@ -299,21 +299,20 @@ class InicioAutomatico(APIView):
             response.set_cookie(
                 key="jwt",
                 value=str(new_access),
-                max_age=320,
                 httponly=True,
-                samesite="Lax",
-                secure=False,
-                domain=None
+                secure=True,
+                samesite="None",
+                domain="api-deploy-wyep.onrender.com"
             )
             response.set_cookie(
                 key="refresh_token",
                 value=str(new_refresh),
-                httponly=True,
                 max_age=60*60*24*365,
-                samesite="Lax",
-                secure=False,
-                domain=None
-            )
+                httponly=True,
+                secure=True,
+                samesite="None",
+                domain="api-deploy-wyep.onrender.com"
+            )   
             return response
         except Exception as e:
             return Response(
@@ -344,8 +343,9 @@ class CookieTokenRefreshView(TokenRefreshView):
                 key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # normalmente "jwt"
                 value=response.data["access"],
                 httponly=True,
-                secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-                samesite="Lax"
+                secure=True,  # obligatorio en producción HTTPS
+                samesite="None",  # cross-site
+                domain="api-deploy-wyep.onrender.com"  # crucial para que el navegador acepte la cookie
             )
             # opcional: eliminar del body los tokens
             del response.data["access"]
