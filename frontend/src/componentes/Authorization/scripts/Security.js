@@ -1,16 +1,24 @@
 //cierra la sesion eliminando el token valido de la cookie HTTP actual del usuario loggeado 
+const API_BASE = "http://localhost:8000/api"
+
+
+
 const Logout = () => {
-    fetch("http://localhost:8000/api/auth/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-    })
+    localStorage.removeItem("usuarioGuardado")
+    let cookie = document.cookie
+    cookie = cookie.split(";").flat().find(item => item.startsWith(" recordarDatos"))
+    if(!cookie){
+        fetch("http://localhost:8000/api/auth/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+        })
         .then(response => response.json())
         .catch(e => console.error("ha ocurrido un error al cerrar sesión", e))
+    }
 }
 
 
-const API_BASE = "http://localhost:8000/api"
 
 async function secureFetch() {
     try {
@@ -19,12 +27,14 @@ async function secureFetch() {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         });
-        return res.ok; // true si refrescó correctamente
+        const data = await res.json()
+        return data
     } catch (e) {
         console.error("Error al refrescar token:", e);
         return false;
     }
 }
+
 
 
 export { Logout, secureFetch } 

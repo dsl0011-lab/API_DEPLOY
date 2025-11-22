@@ -1,16 +1,18 @@
 import Register from './Registro';
 import Login from './Login';
-import Logo from '../../assets/logo-2.png';
+import Logo from '../../assets/logo-2.png'
+import ComponenteLoading from '../PantallaLoading/ComponenteLoading';
 import { UsuarioContext } from '../useContext/UsuarioContext';
+import { LoadingContext } from '../useContext/LoadingContext';
 import { useState, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
   const [flipped, setFlipped] = useState(false);
   const { setUsuario } = useContext(UsuarioContext);
+  const { Loading } = useContext(LoadingContext);
   const navigate = useNavigate();
 
-  // 👉 la recibe desde Login/Registro cuando el backend confirma
   const funcUsuario = useCallback((informacion) => {
     if (informacion) {
       // guarda en contexto
@@ -20,8 +22,10 @@ const Auth = () => {
     }
   }, [setUsuario, navigate]);
 
+
   return (
     <div className='w-full h-screen overflow-hidden flex justify-center items-center bg-gradient-to-t from-gray-400 to-black box-border'>
+      {Loading !== false &&  <ComponenteLoading />}
       <section className='relative [perspective:1000px] w-[90vw] max-w-[600px] h-[95vh] max-h-[600px] sm:max-h-[400] flex justify-center items-center flex-col'>
         <img src={Logo} className='w-[120px] h-[75px] max-w-72 max-h-56 object-cover p-2 sm:w-fit sm:h-fit' />
         {/* tarjeta principal del flipped */}

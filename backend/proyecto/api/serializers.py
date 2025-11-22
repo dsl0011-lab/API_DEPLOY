@@ -4,7 +4,6 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import UsuarioPersonalizado
 
-
 class RegistroSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     role = serializers.CharField(read_only=True)  # se devuelve, pero NO se acepta
@@ -24,23 +23,6 @@ class RegistroSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
-
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
-
-    def validate(self, attrs):
-        user = authenticate(username=attrs.get("username"), password=attrs.get("password"))
-        if not user:
-            raise serializers.ValidationError("Credenciales inválidas.")
-        attrs["user"] = user
-        return attrs
-
-class UserPublicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UsuarioPersonalizado
-        fields = ("id", "username", "email")
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

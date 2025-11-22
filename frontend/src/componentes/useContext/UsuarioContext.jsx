@@ -3,13 +3,7 @@ import { createContext, useState } from "react";
 const UsuarioContext = createContext();
 
 export default function UsuarioProvider({ children }) {
-    const [usuario, setUsuario] = useState({
-        full_name: "",
-        email: "",
-        gender: "",
-        rol: "",
-        username: ""
-    });
+    const [usuario, setUsuario] = useState(null);
 
     return (
         <UsuarioContext.Provider value={{ usuario, setUsuario }}>

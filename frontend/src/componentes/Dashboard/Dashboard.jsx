@@ -6,11 +6,15 @@ import arrow from '../../assets/btn-arrow.svg'
 import exit from '../../assets/exit.svg'
 import Sidebar from "./Sidebar"
 import Inicio from "./Inicio"
+import ComponenteLoading from "../PantallaLoading/ComponenteLoading"
+
 
 const Dashboard = () => {
-    const { setUsuario } = useContext(UsuarioContext)
+    const { usuario, setUsuario } = useContext(UsuarioContext)
     const [showNB, setShowNB] = useState(false)
-    const location = useLocation();
+    const location = useLocation(); 
+
+
 
     return (
         <main className="flex h-full min-h-screen min-w-screen w-full bg-gray-50 dark:bg-gray-900">
@@ -21,7 +25,7 @@ const Dashboard = () => {
             >
                 <Sidebar showNB={showNB} setShowNB={setShowNB} />
                 <img src={arrow} className="w-8 h-8 m-2 pr-1 rounded-r-lg bg-white hover:bg-gray-400 absolute top-60 right-[-40px]" 
-                onClick={()=>(setShowNB((prev) => !prev))}
+                onClick={()=>{setShowNB((prev) => !prev)}}
                 />
             </div>
             <section className="flex flex-col w-full h-auto p-4 z-0">
@@ -29,16 +33,24 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
                         Tablero
                     </h3>
-                    <button onClick={() => (Logout(), setUsuario(() => ""))} className='bg-white w-12 h-12 hover:bg-gray-400 text-lg rounded-2xl p-2 ml-2 absolute top-0 right-0'>
+                    <button onClick={() => (Logout(), setUsuario(() => null))} className='bg-white w-12 h-12 hover:bg-gray-400 text-lg rounded-2xl p-2 ml-2 absolute top-0 right-0'>
                         <img src={exit} className="w-fit h-fit" />
                     </button>
                 </article>
                 <article className="flex-1 p-6">
-                    {location.pathname == '/' && <Inicio /> }
-                    <Outlet />
+                    {
+                    usuario ? 
+                    (<>
+                        {location.pathname == '/' && <Inicio />}
+                        <Outlet />
+                    </>)
+                    : <ComponenteLoading />
+                    }
                 </article>
             </section>
         </main>
     )
 }
+
+
 export default Dashboard

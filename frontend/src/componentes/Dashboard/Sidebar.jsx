@@ -16,7 +16,6 @@ const Sidebar = () => {
 
   return (
     <aside className={`w-full h-full min-h-screen text-2xl absolute md:static mdh:bg-green-400 bg-gray-800 dark:bg-gray-800 text-white p-6 mdh:p-[1px] flex flex-col`}>
-      <h2 className="font-bold m-8 mdh:mb-0 mdh:hidden">Aula Virtual</h2>
       <nav className="w-auto h-full mdh:text-sm  mdh:overflow-y-auto flex flex-col gap-4 bg-gray-700 p-4">
         <button onClick={()=>ir('/')} className="flex-1 bg-slate-900 flex items-center justify-center flex-col p-1 gap-1 hover:bg-sky-950 rounded-2xl">
           <img src={inicio} className="mdh:w-6/12 mdh:h-6/12 w-[45px] h-[45px]" />

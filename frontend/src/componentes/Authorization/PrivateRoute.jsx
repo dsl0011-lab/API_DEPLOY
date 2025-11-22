@@ -4,9 +4,8 @@ import { UsuarioContext } from '../useContext/UsuarioContext'
 
 function PrivateRoute() {
     const { usuario } = useContext(UsuarioContext)
-
     return(
-        usuario?.username 
+        usuario !== undefined && usuario !== null
         ? <Outlet />
         : <Navigate to='/Auth' replace />
     ) 
