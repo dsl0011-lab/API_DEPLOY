@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { UsuarioContext } from "../useContext/UsuarioContext";
 import { apiFetch } from "../Profesor/api";
 import ComponenteLoading from '../PantallaLoading/ComponenteLoading';
+import HelpElement from '../Authorization/HelpElement'
 
 const Perfil = () => {
   const { usuario, setUsuario } = useContext(UsuarioContext);
@@ -15,7 +16,7 @@ const Perfil = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [ help, setHelp ] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Avatar
@@ -430,14 +431,16 @@ const Perfil = () => {
       {/* Modal editar perfil */}
       {editOpen && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          {/* componente de ayuda para ingresar correctamente la contraseña */}
           <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 w-[460px]">
             <h3 className="text-lg font-semibold mb-3 text-white">
               Editar perfil
             </h3>
             <form
               onSubmit={handleSaveProfile}
-              className="space-y-3 text-sm text-white"
-            >
+              className="relative space-y-3 text-sm text-white"
+              >
+              {help === true && <HelpElement />}
               <div>
                 <label className="block mb-1">Nombre de usuario</label>
                 <input
@@ -461,20 +464,26 @@ const Perfil = () => {
                 <div>
                   <label className="block mb-1">Nueva contraseña</label>
                   <input
+                    onMouseOver={() => setHelp(true)}
+                    onMouseOut={()=>setHelp(false)}
                     type="password"
                     className="w-full rounded border border-gray-600 bg-transparent px-3 py-2"
                     value={editPassword}
                     onChange={(e) => setEditPassword(e.target.value)}
                     placeholder="Dejar en blanco para no cambiarla"
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\s]).+$" minLength={8} maxLength={30}
                   />
                 </div>
                 <div>
                   <label className="block mb-1">Repetir contraseña</label>
                   <input
+                    onMouseOver={() => setHelp(true)}
+                    onMouseOut={()=>setHelp(false)}
                     type="password"
                     className="w-full rounded border border-gray-600 bg-transparent px-3 py-2"
                     value={editPassword2}
                     onChange={(e) => setEditPassword2(e.target.value)}
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\s]).+$" minLength={8} maxLength={30}
                   />
                 </div>
               </div>
