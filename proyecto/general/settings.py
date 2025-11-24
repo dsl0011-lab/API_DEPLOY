@@ -148,15 +148,13 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     "api-deploy-wyep.onrender.com",
-    "frontend-deploy-eosin.vercel.app",
-    "frontend-deploy-qbcz.vercel.app", 
+    'https://frontend-deploy-peach.vercel.app'
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://frontend-deploy-eosin.vercel.app",
-    "https://frontend-deploy-qbcz.vercel.app", 
+    'https://frontend-deploy-peach.vercel.app'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
