@@ -101,7 +101,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=36000),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_COOKIE": "jwt",
@@ -156,16 +156,19 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     "api-deploy-wyep.onrender.com",
-    "frontend-deploy-eosin.vercel.app",
-    "frontend-deploy-qbcz.vercel.app", 
+    "https://frontend-deploy-eosin.vercel.app",
+    "https://frontend-deploy-qbcz.vercel.app", 
+    "https://frontend-deploy-peach.vercel.app",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    'http://localhost:5174'
     "http://127.0.0.1:5173",
+    "api-deploy-wyep.onrender.com",
     "https://frontend-deploy-eosin.vercel.app",
     "https://frontend-deploy-qbcz.vercel.app", 
-    'http://localhost:5174'
+    "https://frontend-deploy-peach.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
