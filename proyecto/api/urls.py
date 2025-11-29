@@ -9,14 +9,21 @@ from api.views import (
     CookieTokenRefreshView,
     CookieTokenVerifyView,
     tareas_curso_para_alumno,
+    SuperAdminLoginView,
+    AdminViewSet
 )
 
 router = DefaultRouter()
 router.register(r'usuarios', UsuarioPersonalizadoViewSet, basename='usuarios')
+router.register(r'admin', AdminViewSet, basename='admin')
 
 urlpatterns = [
     path('', include(router.urls)),
+<<<<<<< HEAD:proyecto/api/urls.py
     path('auth/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+=======
+    path('auth/adminLogin', SuperAdminLoginView.as_view(), name='admin_login' ),
+>>>>>>> e5361e68c827eaab0ab4c55bff1ed4f170ad6678:backend/proyecto/api/urls.py
     path('auth/token/refresh_cookie/', CookieTokenRefreshView.as_view(), name='token_refresh_cookie'), #endpoint para refresh usando cookie httponly
     path("auth/token/verify_cookie/", CookieTokenVerifyView.as_view(), name="token_verify_cookie"), #endpoint para verify usando cookie httponly
     path('auth/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -8,13 +8,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView 
 from rest_framework_simplejwt.views import TokenVerifyView
+from rest_framework.views import APIView
+from django.contrib.auth import authenticate
 from rest_framework import status
 from .models import UsuarioPersonalizado
 from .serializers import (
     UsuarioPersonalizadoSerializer,
-    RegistroSerializer,
+    RegistroSerializer, AdminSerializer
 )
 from authentication import CookieJWTAuthentication #middleware personalizado para leer token desde cookie httponly
 
@@ -306,3 +308,49 @@ def Create_http_cookie(response, access_token=None, refresh_token=None, recordar
             
         )
     return response
+
+
+# apartado admin
+class IsSuperUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.user.is_superuser
+
+
+
+class AdminViewSet(viewsets.ModelViewSet):
+    queryset = UsuarioPersonalizado.objects.all()
+    serializer_class = AdminSerializer
+    permission_classes = [IsSuperUser]
+
+    def list(self, request):
+        usuarios = self.get_queryset()
+        serializer = self.get_serializer(usuarios, many=True)
+        response = Response(serializer.data)
+        Create_http_cookie(response, access, refresh)
+        return response
+
+
+class SuperAdminLoginView(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username, password=password)
+
+        if not user:
+            return Response({"detail": "Credenciales inválidas"}, status=400)
+        if not user.is_superuser:
+            return Response({"detail": "No eres superusuario"}, status=403)
+        
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+
+        usuarios = UsuarioPersonalizado.objects.all()
+        usuarios_serializados = AdminSerializer(usuarios, many=True).data
+        response = Response({
+            "superadmin": user.username,
+            "usuarios": usuarios_serializados     
+        })
+
+        Create_http_cookie(response, access, refresh)
+
+        return response

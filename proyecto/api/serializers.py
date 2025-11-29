@@ -106,3 +106,9 @@ class UsuarioPersonalizadoSerializer(serializers.ModelSerializer):
         return data
 
 
+class AdminSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = UsuarioPersonalizado
+        fields = "__all__"
