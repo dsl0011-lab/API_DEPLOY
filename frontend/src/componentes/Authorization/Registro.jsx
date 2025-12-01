@@ -5,7 +5,7 @@ import eye from '../../assets/img-eye.svg'
 import closedEye from '../../assets/closedEye.svg'
 
 const Register = ({ funcUsuario, setFlipped, setRequestFinalizada }) => {
-    const URL = `${API_BASE}api/auth/register/`
+    const URL = `${API_BASE}/api/auth/register/`
     const [error, setError] = useState(false)
     const [help, setHelp] = useState(false)
     const [errorDescripcion, setErrorDescripcion] = useState([])
@@ -40,15 +40,16 @@ const Register = ({ funcUsuario, setFlipped, setRequestFinalizada }) => {
                         credentials: 'include',
                         body: JSON.stringify(formData)
                     })
+                    let validarRespuesta =await respuesta.json()
                     if (!respuesta?.ok) {
                         // Normalizamos errores para renderizar
-                        const errores = Object.values(respuesta)
+                        const errores = Object.values(validarRespuesta)
                             .flat()
                             .map(err => typeof err === "string" ? err : JSON.stringify(err));
                         setError(true);
                         setErrorDescripcion(errores);
                     } else {
-                        funcUsuario(respuesta)
+                        funcUsuario(validarRespuesta)
                     }
                 } catch (e) {
                     const errores = Object.values(e)
@@ -85,7 +86,7 @@ const Register = ({ funcUsuario, setFlipped, setRequestFinalizada }) => {
                             luego incrementar seguridad de credencial contraseña con expresiones regulares u otra medida */}
                     <div className="relative w-full max-w-60 h-auto">
                         <input
-                            type={mostrarPassword ? "text" : "password"} placeholder="Ingresa tu contraseña" name="password" id="password" onMouseOver={() => setHelp(prev => !prev)} onMouseOut={() => setHelp(prev => !prev)}
+                            type={mostrarPassword ? "text" : "password"} placeholder="Ingresa tu contraseña" name="passwordR" id="passwordR" onMouseOver={() => setHelp(prev => !prev)} onMouseOut={() => setHelp(prev => !prev)}
                             className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-w-60 h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\s]).+$" minLength={8} maxLength={30} required
                         />
                         <button type="button" onClick={() => setMostrarPassword(prev => !prev)} className="absolute right-3 top-1/2 -translate-y-1/2">
