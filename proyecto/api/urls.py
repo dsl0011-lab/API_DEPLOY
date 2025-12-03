@@ -25,6 +25,7 @@ urlpatterns = [
     path('auth/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/register/', register_user, name='register'),
     path('auth/logout', logout, name='logout'), #endpoint para logout eliminando la cookie httponly
-    # Alumno: tareas publicadas de un curso concreto
+    # Alumno: tareas publicadas de un 
+    # curso concreto
     path('alumno/cursos/<int:curso_id>/tareas/', tareas_curso_para_alumno, name='alumno_tareas_curso'),
 ]

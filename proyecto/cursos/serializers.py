@@ -1,13 +1,25 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import Curso, Matricula, Tarea, Entrega, Calificacion, Tutoria
+from api.serializers import UsuarioPersonalizadoSerializer
+from api.models import UsuarioPersonalizado
 
 class CursoSerializer(serializers.ModelSerializer):
+    alumnos_no_matriculados = serializers.SerializerMethodField()
     alumnos_count = serializers.IntegerField(read_only=True)
     class Meta:
-        model = Curso
-        fields = ['id','nombre','descripcion','profesor','creado_en','alumnos_count']
-        read_only_fields = ['profesor','creado_en','alumnos_count']
+        model = Curso 
+        fields = ['id','nombre','descripcion','profesor','creado_en','alumnos_count', 'alumnos_no_matriculados']
+        read_only_fields = ['profesor','creado_en','alumnos_count', 'alumnos_no_matriculados']
+    def get_alumnos_no_matriculados(self, obj):
+        matriculados_ids = obj.matriculas.values_list("alumno_id", flat=True)
+        alumnos = UsuarioPersonalizado.objects.filter(
+            role="S"
+        ).exclude(
+            id__in=matriculados_ids
+        )
+        return UsuarioPersonalizadoSerializer(alumnos, many=True).data
+
 
 class MatriculaSerializer(serializers.ModelSerializer):
     class Meta:
